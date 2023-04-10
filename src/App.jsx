@@ -8,7 +8,8 @@ function App() {
 
   return (
     <div className="App">
-      something will be here
+      <h1>Memory Game</h1>
+      <button>new game</button>
     </div>
   )
 }
