@@ -1,15 +1,41 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const cardImages = [
+  {"src": "../img/helmet-1.png"},
+  {"src": "../img/potion-1.png"},
+  {"src": "../img/ring-1.png"},
+  {"src": "../img/scroll-1.png"},
+  {"src": "../img/shield-1.png"},
+  {"src": "../img/sword-1.png"}
+]
 
+function App() {
+  const [cards, setCards] = useState([]);
+  const [turns, setTurns] = useState(0);
+
+  const shuffleCards = () => {
+    const shuffledCards = [...cardImages, ...cardImages]
+      .sort(() => Math.random() - 0.5)
+      .map(card => ({ ...card, id: Math.random() }))
+
+      setCards(shuffledCards)
+  }
+  console.log(cards, turns);
   return (
     <div className="App">
       <h1>Memory Game</h1>
-      <button>new game</button>
+      <button onClick={shuffleCards}>new game</button>
+      <div className="card-grid">
+        {cards.map(card => (
+          <div className="card" key={card.id}>
+            <div>
+              <img className="card-front" src={card.src} alt="card-front" />
+              <img className="card-back" src="../img/cover.png" alt="card-back" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
