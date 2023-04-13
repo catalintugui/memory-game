@@ -45,12 +45,10 @@ function App() {
         })
         resetTurn();
       } else {
-        resetTurn();
+        setTimeout(() => resetTurn(), 1000)
       }
     }
   }, [firstChoice, secondChoice])
-
-  console.log(cards);
 
   const resetTurn = () => {
     setFirstChoice(null);
