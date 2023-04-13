@@ -1,39 +1,74 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Card from './components/Card';
+
 import './App.css'
 
 const cardImages = [
-  {"src": "../img/helmet-1.png"},
-  {"src": "../img/potion-1.png"},
-  {"src": "../img/ring-1.png"},
-  {"src": "../img/scroll-1.png"},
-  {"src": "../img/shield-1.png"},
-  {"src": "../img/sword-1.png"}
+  {"src": "../img/helmet-1.png", matched: false},
+  {"src": "../img/potion-1.png", matched: false},
+  {"src": "../img/ring-1.png", matched: false},
+  {"src": "../img/scroll-1.png", matched: false},
+  {"src": "../img/shield-1.png", matched: false},
+  {"src": "../img/sword-1.png", matched: false}
 ]
 
 function App() {
   const [cards, setCards] = useState([]);
   const [turns, setTurns] = useState(0);
+  const [firstChoice, setFirstChoice] = useState(null);
+  const [secondChoice, setSecondChoice] = useState(null);
 
   const shuffleCards = () => {
     const shuffledCards = [...cardImages, ...cardImages]
       .sort(() => Math.random() - 0.5)
       .map(card => ({ ...card, id: Math.random() }))
 
-      setCards(shuffledCards)
+      setCards(shuffledCards);
+      setTurns(0);
   }
-  console.log(cards, turns);
+
+  const handleChoice = (card) => {
+    firstChoice ? setSecondChoice(card) : setFirstChoice(card);
+  }
+
+  useEffect(() => {
+    if(firstChoice && secondChoice){
+      if(firstChoice.src === secondChoice.src){
+        setCards(prevCards => {
+          return prevCards.map(card => {
+            if(card.src === firstChoice.src){
+              return {...card, matched: true}
+            } else {
+              return card;
+            }
+          })
+        })
+        resetTurn();
+      } else {
+        resetTurn();
+      }
+    }
+  }, [firstChoice, secondChoice])
+
+  console.log(cards);
+
+  const resetTurn = () => {
+    setFirstChoice(null);
+    setSecondChoice(null);
+    setTurns(prevTurns => prevTurns + 1);
+  }
+
   return (
     <div className="App">
       <h1>Memory Game</h1>
       <button onClick={shuffleCards}>new game</button>
       <div className="card-grid">
         {cards.map(card => (
-          <div className="card" key={card.id}>
-            <div>
-              <img className="card-front" src={card.src} alt="card-front" />
-              <img className="card-back" src="../img/cover.png" alt="card-back" />
-            </div>
-          </div>
+          < Card 
+            key={card.id} 
+            card={card} 
+            handleChoice={handleChoice}
+          />
         ))}
       </div>
     </div>
